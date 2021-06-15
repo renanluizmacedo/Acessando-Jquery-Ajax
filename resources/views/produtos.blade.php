@@ -28,7 +28,7 @@
     <div class="modal" tabindex = "-1" role="dialog" id="dlgProdutos" >
         <div class="modal-dialog" role = "document">
             <div class="modal-content">
-                <form class = "form-horizontal" id="form-produto">
+                <form class = "form-horizontal" id="formProduto">
                     <div class="modal-header">
                         <h5 class="modal-title">Novo Produto</h5>
                     </div>
@@ -94,9 +94,17 @@
 @section('javascript')
     <script type="text/javascript">
 
+        $.ajaxSetup({
+            headers:{
+                'X-CSRF-TOKEN': "{{csrf_token() }}"
+            }
+
+        });
+        
+
 
         function novoProduto(){
-           
+            $('#id').val('');
             $('#nomeProduto').val('');
             $('#precoProduto').val('');
             $('#quantidadeProduto').val('');
@@ -117,6 +125,7 @@
 
         }
         function montarLinha(p){
+
             var linha = "<tr>" + 
                     "<td>" + p.id +"</td>" +
                     "<td>" + p.nome +"</td>" +
@@ -143,12 +152,30 @@
             });
 
         }
-        $(function(){
-            carregarCategorias();
-            carregarProdutos();
+        function criarProduto(){
+
+            prod =  {   
+                nome: $("#nomeProduto").val(),
+                preco:$("#precoProduto").val(),
+                estoque:$("#quantidadeProduto").val(),
+                categoria_id:$("#categoriaProduto").val()         
+            }
+            $.post("/api/produtos",prod,function(data){
+                console.log(data);
+                
+            })
+        }
+
+        $('#formProduto').submit(function(event){
+
+            event.preventDefault();
+            criarProduto();
+            $('dlgProdutos').modal('hide');
         })
 
-        
-
+        $(function(){
+            carregarCategorias();
+            carregarProdutos()
+        })
     </script>
 @endsection
