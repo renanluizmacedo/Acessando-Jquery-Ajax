@@ -161,7 +161,9 @@
                 categoria_id:$("#categoriaProduto").val()         
             }
             $.post("/api/produtos",prod,function(data){
-                console.log(data);
+                produto = JSON.parse(data);
+                linha = montarLinha(produto);
+                $('#tabelaProdutos>tbody').append(linha);
                 
             })
         }
@@ -170,12 +172,13 @@
 
             event.preventDefault();
             criarProduto();
-            $('dlgProdutos').modal('hide');
+            $('#dlgProdutos').modal('hide');
         })
 
         $(function(){
             carregarCategorias();
             carregarProdutos()
         })
+
     </script>
 @endsection
